@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบรับสมัครโควตาออนไลน์ | วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Prompt & Sarabun -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- SweetAlert2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+            sarabun: ['Sarabun', 'sans-serif']
+          },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              800: '#0c4a6e',
+              900: '#082f49'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Prompt', sans-serif; background-color: #f8fafc; }
+    .glass-nav {
+      background: rgba(8, 47, 73, 0.95);
+      backdrop-filter: blur(12px);
+    }
+    .badge-pending { background-color: #fef3c7; color: #b45309; }
+    .badge-verified { background-color: #dbeafe; color: #1e40af; }
+    .badge-enrolled { background-color: #d1fae5; color: #065f46; }
+    .badge-rejected { background-color: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- TOP HEADER & NAVBAR -->
+  <header class="glass-nav text-white sticky top-0 z-40 shadow-lg border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-20">
+        
+        <!-- Logo & Title -->
+        <div class="flex items-center space-x-3.5 cursor-pointer" onclick="switchPortal('applicant'); switchAppTab('form')">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-sky-400 to-indigo-500 p-0.5 shadow-md">
+            <div class="w-full h-full bg-brand-900 rounded-[10px] flex items-center justify-center text-2xl">
+              ⚙️
+            </div>
+          </div>
+          <div>
+            <div class="text-xs uppercase tracking-widest text-sky-300 font-semibold">สอศ. อาชีวศึกษา</div>
+            <h1 class="text-base sm:text-lg font-bold leading-tight tracking-wide">
+              วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์
+            </h1>
+            <p class="text-xs text-slate-300">ระบบรับสมัครคัดเลือกเพื่อศึกษาต่อเป็นกรณีพิเศษ (โควตา)</p>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <button id="nav-btn-apply" onclick="switchPortal('applicant'); switchAppTab('form')"
+                  class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-sky-500 text-white shadow-sm hover:bg-sky-400 transition">
+            📝 ยื่นใบสมัครโควตา
+          </button>
+          <button id="nav-btn-status" onclick="switchPortal('applicant'); switchAppTab('status')"
+                  class="px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-white/10 hover:bg-white/20 text-white transition">
+            🔍 เช็คสถานะ / พิมพ์ใบสมัคร
+          </button>
+          <div class="h-6 w-px bg-white/20 hidden md:block"></div>
+          <button onclick="switchPortal('admin')"
+                  class="px-4 py-2 text-xs sm:text-sm font-bold rounded-xl bg-amber-400 text-slate-950 hover:bg-amber-300 shadow-md transition flex items-center space-x-1">
+            <span>🛡️ เจ้าหน้าที่ (Admin)</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================== -->
+  <!-- 1. APPLICANT PORTAL: กรอกใบสมัคร & พิมพ์ PDF รายบุคคล -->
+  <!-- ============================================================== -->
+  <main id="applicant-portal" class="flex-grow">
+    
+    <!-- Hero Banner -->
+    <div class="relative bg-gradient-to-br from-brand-900 via-brand-800 to-slate-900 text-white py-12 px-4 overflow-hidden">
+      <div class="absolute -right-20 -bottom-20 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl"></div>
+      <div class="absolute -left-20 -top-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl"></div>
+
+      <div class="relative max-w-5xl mx-auto text-center space-y-3">
+        <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-sky-400/20 text-sky-200 border border-sky-400/30">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> เปิดรับสมัครนักศึกษาใหม่ ประจำปีการศึกษา ๒๕๖๘
+        </span>
+        <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight">
+          ใบสมัครเข้ารับคัดเลือกเพื่อศึกษาต่อเป็นกรณีพิเศษ (โควตา)
+        </h2>
+        <p class="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto font-light">
+          กรอกข้อมูลให้ครบถ้วนตามแบบฟอร์มของวิทยาลัย พร้อมพิมพ์รายงานใบสมัครเป็น PDF รายบุคคลได้ทันที
+        </p>
+
+        <!-- Sub Toggle -->
+        <div class="pt-4 flex justify-center">
+          <div class="inline-flex bg-slate-950/40 p-1.5 rounded-2xl border border-white/10 shadow-inner">
+            <button id="tab-btn-form" onclick="switchAppTab('form')"
+                    class="px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-white text-brand-900 shadow">
+              ✍️ 1. กรอกข้อมูลใบสมัคร
+            </button>
+            <button id="tab-btn-status" onclick="switchAppTab('status')"
+                    class="px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white">
+              📄 2. ค้นหา & พิมพ์ใบสมัคร PDF รายบุคคล
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-4 py-8">
+
+      <!-- ================= FORM SECTION ================= -->
+      <section id="view-form" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+        
+        <!-- Form Header -->
+        <div class="p-6 sm:p-8 bg-slate-50/80 border-b border-slate-200 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <span class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center text-sm">📋</span>
+              บันทึกข้อมูลใบสมัครเข้ารับคัดเลือก (โควตา)
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์</p>
+          </div>
+          <span class="text-xs bg-brand-50 text-brand-700 px-3 py-1.5 rounded-lg font-semibold border border-brand-200">
+            ระบบสร้าง PDF รายบุคคลอัตโนมัติ
+          </span>
+        </div>
+
+        <form id="quotaForm" class="p-6 sm:p-10 space-y-10" onsubmit="handleFormSubmit(event)">
+
+          <!-- 0. เลือกระดับที่ต้องการสมัคร (Checkbox Group) -->
+          <div class="bg-sky-50/60 p-6 rounded-2xl border border-sky-200 space-y-3">
+            <label class="block text-sm font-bold text-slate-900 uppercase tracking-wide">
+              เลือกระดับที่ต้องการสมัครเข้าศึกษา <span class="text-rose-500">*</span>
+            </label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label class="flex items-center gap-3 p-3.5 bg-white rounded-xl border border-slate-200 hover:border-brand-500 cursor-pointer shadow-sm transition">
+                <input type="radio" name="quotaType" value="ปวช." required onchange="handleQuotaTypeChange('ปวช.')" class="w-4 h-4 text-brand-600">
+                <span class="text-xs sm:text-sm font-semibold text-slate-800">ระดับ ปวช. (จบ ม.3)</span>
+              </label>
+
+              <label class="flex items-center gap-3 p-3.5 bg-white rounded-xl border border-slate-200 hover:border-brand-500 cursor-pointer shadow-sm transition">
+                <input type="radio" name="quotaType" value="ปวส. ( สายตรง )" required onchange="handleQuotaTypeChange('ปวส. ( สายตรง )')" class="w-4 h-4 text-brand-600">
+                <span class="text-xs sm:text-sm font-semibold text-slate-800">ระดับ ปวส. ( สายตรง )</span>
+              </label>
+
+              <label class="flex items-center gap-3 p-3.5 bg-white rounded-xl border border-slate-200 hover:border-brand-500 cursor-pointer shadow-sm transition">
+                <input type="radio" name="quotaType" value="ปวส. ( ม.๖/ปวช. ต่างสาขา )" required onchange="handleQuotaTypeChange('ปวส. ( ม.๖/ปวช. ต่างสาขา )')" class="w-4 h-4 text-brand-600">
+                <span class="text-xs sm:text-sm font-semibold text-slate-800">ระดับ ปวส. ( ม.๖ / ต่างสาขา )</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- ข้อ ๑: ชื่อ-นามสกุล และวันเกิด -->
+          <div class="space-y-4">
+            <h4 class="text-sm font-bold text-slate-900 border-l-4 border-brand-600 pl-3">
+              ๑. ข้อมูลส่วนตัวของผู้สมัคร
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4">
+              
+              <div class="sm:col-span-5">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อ-นามสกุล (มีคำนำหน้า) <span class="text-rose-500">*</span></label>
+                <input type="text" name="fullName" required placeholder="เช่น นายสมชาย ใจดี"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm focus:ring-2 focus:ring-brand-500">
+              </div>
+
+              <div class="sm:col-span-4">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">เลขประจำตัวประชาชน 13 หลัก <span class="text-rose-500">*</span></label>
+                <input type="text" id="idCardInput" name="idCard" maxlength="13" required placeholder="เลข 13 หลัก"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm font-mono tracking-wider focus:ring-2 focus:ring-brand-500">
+              </div>
+
+              <div class="sm:col-span-1">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">เกิดวันที่</label>
+                <input type="number" name="birthDay" min="1" max="31" placeholder="1-31"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm text-center">
+              </div>
+
+              <div class="sm:col-span-1">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">เดือน</label>
+                <select name="birthMonth" class="w-full rounded-xl border-slate-300 border p-2.5 text-xs bg-white">
+                  <option value="มกราคม">ม.ค.</option>
+                  <option value="กุมภาพันธ์">ก.พ.</option>
+                  <option value="มีนาคม">มี.ค.</option>
+                  <option value="เมษายน">เม.ย.</option>
+                  <option value="พฤษภาคม" selected>พ.ค.</option>
+                  <option value="มิถุนายน">มิ.ย.</option>
+                  <option value="กรกฎาคม">ก.ค.</option>
+                  <option value="สิงหาคม">ส.ค.</option>
+                  <option value="กันยายน">ก.ย.</option>
+                  <option value="ตุลาคม">ต.ค.</option>
+                  <option value="พฤศจิกายน">พ.ย.</option>
+                  <option value="ธันวาคม">ธ.ค.</option>
+                </select>
+              </div>
+
+              <div class="sm:col-span-1">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">พ.ศ.</label>
+                <input type="number" name="birthYear" placeholder="2552" value="2552"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm text-center font-mono">
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ข้อ ๒ & ๓: ข้อมูลบิดาและมารดา -->
+          <div class="space-y-4">
+            <h4 class="text-sm font-bold text-slate-900 border-l-4 border-brand-600 pl-3">
+              ๒. และ ๓. ข้อมูลบิดาและมารดา
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-slate-50/60 rounded-2xl border border-slate-200">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อ-สกุลบิดา</label>
+                <input type="text" name="fatherName" placeholder="เช่น นายบุญมี ทองดี"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">อายุ (ปี)</label>
+                <input type="number" name="fatherAge" placeholder="เช่น 48"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">อาชีพบิดา</label>
+                <input type="text" name="fatherJob" placeholder="เช่น พนักงานบริษัท SCG, เกษตรกร"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 bg-slate-50/60 rounded-2xl border border-slate-200">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อ-สกุลมารดา</label>
+                <input type="text" name="motherName" placeholder="เช่น นางปราณี ทองดี"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">อายุ (ปี)</label>
+                <input type="number" name="motherAge" placeholder="เช่น 45"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">อาชีพมารดา</label>
+                <input type="text" name="motherJob" placeholder="เช่น ค้าขาย, ธุรกิจส่วนตัว"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+            </div>
+          </div>
+
+          <!-- ข้อ ๔: ที่อยู่ปัจจุบันที่ติดต่อได้ -->
+          <div class="space-y-4">
+            <h4 class="text-sm font-bold text-slate-900 border-l-4 border-brand-600 pl-3">
+              ๔. ที่อยู่ปัจจุบันที่สามารถติดต่อได้
+            </h4>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">บ้านเลขที่ <span class="text-rose-500">*</span></label>
+                <input type="text" name="houseNo" required placeholder="เช่น 45/2" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">หมู่ที่</label>
+                <input type="text" name="villageNo" placeholder="เช่น 3" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ซอย</label>
+                <input type="text" name="soi" placeholder="เช่น ร่วมมิตร" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ถนน</label>
+                <input type="text" name="road" placeholder="เช่น พหลโยธิน" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ตำบล <span class="text-rose-500">*</span></label>
+                <input type="text" name="subdistrict" required placeholder="เช่น บ้านครัว" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">อำเภอ <span class="text-rose-500">*</span></label>
+                <input type="text" name="district" required placeholder="เช่น บ้านหมอ" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">จังหวัด <span class="text-rose-500">*</span></label>
+                <input type="text" name="province" required placeholder="เช่น สระบุรี" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">รหัสไปรษณีย์</label>
+                <input type="text" name="postcode" placeholder="เช่น 18270" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm font-mono">
+              </div>
+
+              <div class="col-span-2 sm:col-span-4">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">หมายเลขโทรศัพท์ (10 หลัก) <span class="text-rose-500">*</span></label>
+                <input type="tel" name="phone" required maxlength="10" placeholder="เช่น 0812345678"
+                       oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm font-mono">
+              </div>
+            </div>
+          </div>
+
+          <!-- ข้อ ๕: ข้อมูลการศึกษาเดิม -->
+          <div class="space-y-4">
+            <h4 class="text-sm font-bold text-slate-900 border-l-4 border-brand-600 pl-3">
+              ๕. ข้อมูลสถานศึกษาเดิม
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">กำลังศึกษาอยู่ในระดับชั้น <span class="text-rose-500">*</span></label>
+                <select name="currentGrade" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm bg-white">
+                  <option value="ม.3">มัธยมศึกษาปีที่ 3 (ม.3)</option>
+                  <option value="ม.6">มัธยมศึกษาปีที่ 6 (ม.6)</option>
+                  <option value="ปวช.3">ประกาศนียบัตรวิชาชีพปีที่ 3 (ปวช.3)</option>
+                </select>
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อโรงเรียนเดิม <span class="text-rose-500">*</span></label>
+                <input type="text" name="prevSchool" required placeholder="เช่น โรงเรียนท่าหลวงวิทยานุกูล"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ตั้งอยู่เลขที่</label>
+                <input type="text" name="prevSchoolHouseNo" placeholder="เช่น 100" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ตำบล</label>
+                <input type="text" name="prevSchoolSubdistrict" placeholder="เช่น ท่าหลวง" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">อำเภอ</label>
+                <input type="text" name="prevSchoolDistrict" placeholder="เช่น ท่าเรือ" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">จังหวัด</label>
+                <input type="text" name="prevSchoolProvince" placeholder="เช่น พระนครศรีอยุธยา" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">ผลการเรียนเฉลี่ยสะสม ๕ ภาคเรียน (GPAX) <span class="text-rose-500">*</span></label>
+                <input type="number" step="0.01" min="0" max="4" name="gpax" required placeholder="เช่น 3.45"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm font-mono font-bold text-brand-700">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">สาขาวิชาเดิม (ถ้ามี)</label>
+                <input type="text" name="prevMajor" placeholder="เช่น ช่างไฟฟ้ากำลัง, วิทย์-คณิต"
+                       class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+              </div>
+            </div>
+          </div>
+
+          <!-- ข้อ ๖: สาขาวิชาที่ต้องการสมัคร (Dynamic ตามระดับ) -->
+          <div class="space-y-4">
+            <h4 class="text-sm font-bold text-slate-900 border-l-4 border-brand-600 pl-3">
+              ๖. สาขาวิชาที่ต้องการสมัครเข้าเรียน (วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์)
+            </h4>
+
+            <!-- กรณีเลือก ปวส. -->
+            <div id="box-pws-major" class="hidden p-4 bg-sky-50 rounded-2xl border border-sky-200">
+              <label class="block text-xs font-bold text-slate-800 mb-1">
+                ต้องการสมัครเข้าเรียน ระดับ ปวส. สาขาวิชา: <span class="text-rose-500">*</span>
+              </label>
+              <select name="majorPws" id="majorPwsSelect" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm bg-white font-medium">
+                <option value="">-- เลือกสาขาวิชาระดับ ปวส. --</option>
+                <option value="เทคนิคยานยนต์">แผนกวิชาช่างยนต์ - สาขาวิชาเทคนิคยานยนต์</option>
+                <option value="เทคนิคการผลิต">แผนกวิชาช่างกลโรงงาน - สาขาวิชาเทคนิคการผลิต</option>
+                <option value="เทคนิคการเชื่อมโลหะ">แผนกวิชาช่างเชื่อมโลหะ - สาขาวิชาเทคนิคการเชื่อมโลหะ</option>
+                <option value="ไฟฟ้ากำลัง">แผนกวิชาช่างไฟฟ้ากำลัง - สาขาวิชาไฟฟ้ากำลัง</option>
+                <option value="อิเล็กทรอนิกส์อุตสาหกรรม">แผนกวิชาช่างอิเล็กทรอนิกส์ - สาขาวิชาอิเล็กทรอนิกส์อุตสาหกรรม</option>
+                <option value="การบัญชี">แผนกวิชาการบัญชี - สาขาวิชาการบัญชี</option>
+                <option value="เทคโนโลยีธุรกิจดิจิทัล">แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล</option>
+                <option value="การจัดการโลจิสติกส์">แผนกวิชาการจัดการโลจิสติกส์และซัพพลายเชน</option>
+              </select>
+            </div>
+
+            <!-- กรณีเลือก ปวช. (มีอันดับ 1 และ อันดับ 2) -->
+            <div id="box-pwc-major" class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-indigo-50 rounded-2xl border border-indigo-200">
+              <div>
+                <label class="block text-xs font-bold text-slate-800 mb-1">
+                  ระดับ ปวช. สาขาวิชาลำดับที่ ๑ <span class="text-rose-500">*</span>
+                </label>
+                <select name="majorPwc1" id="majorPwc1Select" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm bg-white font-medium">
+                  <option value="">-- เลือกสาขาวิชาลำดับที่ ๑ --</option>
+                  <option value="ช่างยนต์">แผนกวิชาช่างยนต์</option>
+                  <option value="ช่างกลโรงงาน">แผนกวิชาช่างกลโรงงาน</option>
+                  <option value="ช่างเชื่อมโลหะ">แผนกวิชาช่างเชื่อมโลหะ</option>
+                  <option value="ช่างไฟฟ้ากำลัง">แผนกวิชาช่างไฟฟ้ากำลัง</option>
+                  <option value="ช่างอิเล็กทรอนิกส์">แผนกวิชาช่างอิเล็กทรอนิกส์</option>
+                  <option value="การบัญชี">แผนกวิชาการบัญชี</option>
+                  <option value="เทคโนโลยีธุรกิจดิจิทัล">แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล</option>
+                  <option value="การตลาด">แผนกวิชาการตลาด</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-800 mb-1">
+                  สาขาวิชาลำดับที่ ๒ (สำรอง)
+                </label>
+                <select name="majorPwc2" id="majorPwc2Select" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm bg-white font-medium">
+                  <option value="">-- เลือกสาขาวิชาลำดับที่ ๒ --</option>
+                  <option value="ช่างยนต์">แผนกวิชาช่างยนต์</option>
+                  <option value="ช่างกลโรงงาน">แผนกวิชาช่างกลโรงงาน</option>
+                  <option value="ช่างเชื่อมโลหะ">แผนกวิชาช่างเชื่อมโลหะ</option>
+                  <option value="ช่างไฟฟ้ากำลัง">แผนกวิชาช่างไฟฟ้ากำลัง</option>
+                  <option value="ช่างอิเล็กทรอนิกส์">แผนกวิชาช่างอิเล็กทรอนิกส์</option>
+                  <option value="การบัญชี">แผนกวิชาการบัญชี</option>
+                  <option value="เทคโนโลยีธุรกิจดิจิทัล">แผนกวิชาเทคโนโลยีธุรกิจดิจิทัล</option>
+                  <option value="การตลาด">แผนกวิชาการตลาด</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- อัปโหลดหลักฐานประกอบการสมัคร -->
+          <div class="space-y-4">
+            <h4 class="text-sm font-bold text-slate-900 border-l-4 border-brand-600 pl-3">
+              หลักฐานประกอบการสมัคร (ไฟล์ JPG, PNG หรือ PDF)
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              
+              <div class="p-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-50 transition">
+                <label class="block text-xs font-bold text-slate-800 mb-1">📸 รูปถ่ายหน้าตรง ขนาด ๑ นิ้ว</label>
+                <p class="text-[11px] text-slate-500 mb-2">ถ่ายไม่เกิน 6 เดือน หน้าตรง ไม่สวมหมวก</p>
+                <input type="file" name="photo" accept="image/*" class="text-xs text-slate-600">
+              </div>
+
+              <div class="p-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-50 transition">
+                <label class="block text-xs font-bold text-slate-800 mb-1">📜 ๑. เอกสารแสดงผลการเรียนเฉลี่ยสะสม ๕ ภาคเรียน (ปพ.1)</label>
+                <p class="text-[11px] text-slate-500 mb-2">จำนวน ๑ ฉบับ พร้อมรับรองสำเนา</p>
+                <input type="file" name="transcript" accept=".pdf,image/*" class="text-xs text-slate-600">
+              </div>
+
+              <div class="p-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-50 transition">
+                <label class="block text-xs font-bold text-slate-800 mb-1">🪪 ๒. สำเนาบัตรประชาชน / สำเนาทะเบียนบ้าน</label>
+                <p class="text-[11px] text-slate-500 mb-2">จำนวน ๑ ฉบับ พร้อมรับรองสำเนา</p>
+                <input type="file" name="idCardFile" accept=".pdf,image/*" class="text-xs text-slate-600">
+              </div>
+
+              <div class="p-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 hover:bg-slate-50 transition">
+                <label class="block text-xs font-bold text-slate-800 mb-1">🏆 ๓. สำเนาเกียรติบัตร / ใบรับรองความสามารถพิเศษ (ถ้ามี)</label>
+                <p class="text-[11px] text-slate-500 mb-2">สำหรับพิจารณาโควตากรณีพิเศษ</p>
+                <input type="file" name="certFile" accept=".pdf,image/*" class="text-xs text-slate-600">
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="p-6 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <span class="text-xs text-slate-500">
+              🔒 ตรวจสอบความถูกต้องของข้อมูลก่อนยืนยัน เพื่อความถูกต้องของรายงานใบสมัคร
+            </span>
+            <button type="submit" id="btnSubmitForm"
+                    class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-500/25 transition transform hover:-translate-y-0.5 text-sm">
+              💾 บันทึกข้อมูลและสร้างใบสมัคร PDF
+            </button>
+          </div>
+
+        </form>
+
+      </section>
+
+      <!-- ================= CHECK STATUS & PRINT PDF ================= -->
+      <section id="view-status" class="hidden space-y-6">
+        
+        <!-- Search Box -->
+        <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm max-w-xl mx-auto text-center space-y-4">
+          <div class="w-14 h-14 bg-sky-50 text-brand-600 rounded-2xl flex items-center justify-center text-3xl mx-auto">
+            🔍
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">ค้นหาและพิมพ์รายงานใบสมัคร (PDF)</h3>
+          <p class="text-xs text-slate-500">กรอกเลขบัตรประชาชน 13 หลัก หรือรหัสใบสมัครเพื่อดาวน์โหลดเอกสาร</p>
+          
+          <form onsubmit="searchApplication(event)" class="flex flex-col sm:flex-row gap-2">
+            <input type="text" id="statusIdCard" placeholder="กรอกเลขบัตร 13 หลัก เช่น 1103702589632"
+                   class="flex-grow rounded-xl border border-slate-300 p-3 text-sm font-mono tracking-wider focus:ring-2 focus:ring-brand-500">
+            <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow">
+              ค้นหา
+            </button>
+          </form>
+
+          <div class="text-xs text-slate-400">
+            ตัวอย่างทดสอบ: <button onclick="quickSearch('1103702589632')" class="text-brand-600 underline font-mono">1103702589632</button>
+            • <button onclick="quickSearch('1100501234567')" class="text-brand-600 underline font-mono">1100501234567</button>
+          </div>
+        </div>
+
+        <!-- Result Card -->
+        <div id="applicantResultCard" class="hidden bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+          <div class="flex flex-wrap justify-between items-center gap-4 border-b border-slate-100 pb-5">
+            <div>
+              <span id="app-badge" class="px-3 py-1 rounded-full text-xs font-bold inline-block mb-1"></span>
+              <h4 class="text-xl font-bold text-slate-900" id="app-name">-</h4>
+              <p class="text-xs text-slate-500">รหัสใบสมัคร: <strong class="font-mono text-brand-700" id="app-id">-</strong></p>
+            </div>
+
+            <!-- ปุ่มพิมพ์ PDF รายบุคคล -->
+            <a id="app-btn-pdf" href="#" target="_blank"
+               class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition flex items-center gap-2">
+              <span>📄 ดาวน์โหลด / พิมพ์ใบสมัคร (PDF)</span>
+            </a>
+          </div>
+
+          <!-- Summary info -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-2xl text-xs">
+            <div><span class="text-slate-400 block">ระดับที่สมัคร:</span><strong class="text-slate-800 text-sm" id="app-quota-type">-</strong></div>
+            <div><span class="text-slate-400 block">สาขาวิชาเป้าหมาย:</span><strong class="text-brand-700 text-sm" id="app-major">-</strong></div>
+            <div><span class="text-slate-400 block">โรงเรียนเดิม:</span><strong class="text-slate-800 text-sm" id="app-school">-</strong></div>
+            <div><span class="text-slate-400 block">เกรดเฉลี่ย (GPAX):</span><strong class="text-emerald-700 text-sm font-mono" id="app-gpax">-</strong></div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- 2. ADMIN PORTAL: แดชบอร์ดกราฟแยกแผนกวิชา & จัดการข้อมูล -->
+  <!-- ============================================================== -->
+  <main id="admin-portal" class="hidden flex-grow bg-slate-100">
+    
+    <!-- Admin Login -->
+    <div id="admin-login-view" class="max-w-md mx-auto my-16 px-4">
+      <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-200 text-center space-y-4">
+        <div class="w-16 h-16 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-inner">
+          🛡️
+        </div>
+        <h3 class="text-xl font-bold text-slate-900">เข้าสู่ระบบสำหรับเจ้าหน้าที่</h3>
+        <p class="text-xs text-slate-500">วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์</p>
+
+        <form onsubmit="handleAdminLogin(event)" class="space-y-3 text-left">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">ชื่อผู้ใช้งาน</label>
+            <input type="text" id="admUser" value="admin" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">รหัสผ่าน</label>
+            <input type="password" id="admPass" value="admin1234" class="w-full rounded-xl border-slate-300 border p-2.5 text-sm">
+          </div>
+          <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl text-sm shadow">
+            เข้าสู่ระบบ Back-end
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard Main Screen -->
+    <div id="admin-dashboard-view" class="hidden pb-12">
+      
+      <!-- Sub Bar -->
+      <div class="bg-slate-900 text-white py-4 px-4 sm:px-8 shadow-inner">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+          <div>
+            <h2 class="text-lg font-bold flex items-center gap-2">
+              <span>📊 แดชบอร์ดสรุปผลการรับสมัครโควตาแยกตามแผนกวิชา</span>
+            </h2>
+            <p class="text-xs text-slate-400">วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="downloadExcelExport()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow">
+              📥 ส่งออก Excel
+            </button>
+            <button onclick="loadDashboardData()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold">
+              🔄 รีเฟรช
+            </button>
+            <button onclick="handleAdminLogout()" class="px-3 py-1.5 bg-rose-900/60 hover:bg-rose-800 text-rose-200 rounded-lg text-xs font-semibold">
+              🚪 ออกจากระบบ
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6">
+        
+        <!-- Summary KPI Cards -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-xs text-slate-500 font-semibold uppercase">ผู้สมัครโควตาทั้งหมด</span>
+            <div class="text-3xl font-extrabold text-slate-900 mt-2" id="kpi-total">0</div>
+            <span class="text-xs text-brand-600">รวมทุกระดับชั้น</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-sm bg-amber-50/20">
+            <span class="text-xs text-amber-700 font-semibold uppercase">⏳ รอตรวจสอบ</span>
+            <div class="text-3xl font-extrabold text-amber-600 mt-2" id="kpi-pending">0</div>
+            <span class="text-xs text-amber-700">รอตรวจเอกสาร</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-blue-200 shadow-sm bg-blue-50/20">
+            <span class="text-xs text-blue-700 font-semibold uppercase">✅ ผ่านการคัดเลือก</span>
+            <div class="text-3xl font-extrabold text-blue-600 mt-2" id="kpi-verified">0</div>
+            <span class="text-xs text-blue-700">รอสอบสัมภาษณ์/มอบตัว</span>
+          </div>
+
+          <div class="bg-white p-5 rounded-2xl border border-emerald-200 shadow-sm bg-emerald-50/20">
+            <span class="text-xs text-emerald-700 font-semibold uppercase">🎓 มอบตัวสำเร็จ</span>
+            <div class="text-3xl font-extrabold text-emerald-600 mt-2" id="kpi-enrolled">0</div>
+            <span class="text-xs text-emerald-700">ออกรหัสนักศึกษาแล้ว</span>
+          </div>
+        </div>
+
+        <!-- CHARTS: กราฟแสดงผลการรับสมัคร แยก แผนกวิชา -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- กราฟแท่งแยกตามแผนกวิชา (Col Span 2) -->
+          <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">📊 ยอดผู้สมัครแยกตามแผนกวิชา</h3>
+                <p class="text-xs text-slate-400">เปรียบเทียบจำนวนผู้สมัครแต่ละแผนกของวิทยาลัย</p>
+              </div>
+              <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">Real-time</span>
+            </div>
+            <div class="h-80">
+              <canvas id="chartDept"></canvas>
+            </div>
+          </div>
+
+          <!-- สัดส่วนประเภทโควตา (Doughnut) -->
+          <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">🥧 สัดส่วนประเภทโควตา</h3>
+              <p class="text-xs text-slate-400">ปวช. vs ปวส. สายตรง vs ต่างสาขา</p>
+            </div>
+            <div class="h-64 flex items-center justify-center">
+              <canvas id="chartQuotaType"></canvas>
+            </div>
+            <div id="quotaLegend" class="text-xs space-y-1.5 pt-2 border-t border-slate-100">
+              <!-- filled by JS -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- APPLICATIONS LIST TABLE WITH PDF PRINT PER INDIVIDUAL -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden space-y-4">
+          <div class="p-6 border-b border-slate-100 flex flex-wrap justify-between items-center gap-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">📋 รายชื่อผู้สมัครโควตา และรายงานใบสมัคร PDF รายบุคคล</h3>
+              <p class="text-xs text-slate-400">คลิกที่ปุ่ม "📄 พิมพ์ PDF" ในแต่ละแถวเพื่อดูและพิมพ์เอกสารของผู้สมัครรายบุคคล</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex items-center gap-2">
+              <input type="text" id="admSearch" placeholder="ค้นหาชื่อ, เลขบัตร, สาขา..."
+                     onkeyup="filterTable()" class="rounded-xl border-slate-300 border px-3 py-1.5 text-xs w-48 sm:w-60">
+              <select id="admFilterType" onchange="filterTable()" class="rounded-xl border-slate-300 border px-2 py-1.5 text-xs bg-white">
+                <option value="all">ทุกประเภท</option>
+                <option value="ปวช.">ปวช.</option>
+                <option value="ปวส.">ปวส.</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase">
+                  <th class="p-4">รหัสใบสมัคร</th>
+                  <th class="p-4">ชื่อ-นามสกุล ผู้สมัคร</th>
+                  <th class="p-4">ประเภทโควตา</th>
+                  <th class="p-4">สาขาวิชาที่สมัคร</th>
+                  <th class="p-4">โรงเรียนเดิม</th>
+                  <th class="p-4">GPAX</th>
+                  <th class="p-4">สถานะ</th>
+                  <th class="p-4 text-center">รายงานใบสมัคร (PDF)</th>
+                  <th class="p-4 text-center">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody" class="divide-y divide-slate-100">
+                <!-- dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    let appList = [];
+    let chartDeptInstance = null;
+    let chartQuotaInstance = null;
+
+    // Switch between Public & Admin Portal
+    function switchPortal(portal) {
+      if (portal === 'admin') {
+        document.getElementById('applicant-portal').classList.add('hidden');
+        document.getElementById('admin-portal').classList.remove('hidden');
+        checkAdminLogin();
+      } else {
+        document.getElementById('admin-portal').classList.add('hidden');
+        document.getElementById('applicant-portal').classList.remove('hidden');
+      }
+    }
+
+    // Switch Applicant Sub Tabs
+    function switchAppTab(tab) {
+      const viewForm = document.getElementById('view-form');
+      const viewStatus = document.getElementById('view-status');
+      const btnForm = document.getElementById('tab-btn-form');
+      const btnStatus = document.getElementById('tab-btn-status');
+
+      if (tab === 'form') {
+        viewForm.classList.remove('hidden');
+        viewStatus.classList.add('hidden');
+        btnForm.className = "px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-white text-brand-900 shadow";
+        btnStatus.className = "px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white";
+      } else {
+        viewForm.classList.add('hidden');
+        viewStatus.classList.remove('hidden');
+        btnForm.className = "px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white";
+        btnStatus.className = "px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition bg-white text-brand-900 shadow";
+      }
+    }
+
+    // Toggle Majors by Quota Type
+    function handleQuotaTypeChange(type) {
+      const boxPws = document.getElementById('box-pws-major');
+      const boxPwc = document.getElementById('box-pwc-major');
+      const pwsSelect = document.getElementById('majorPwsSelect');
+      const pwc1Select = document.getElementById('majorPwc1Select');
+
+      if (type === 'ปวช.') {
+        boxPws.classList.add('hidden');
+        boxPwc.classList.remove('hidden');
+        pwsSelect.removeAttribute('required');
+        pwc1Select.setAttribute('required', 'required');
+      } else {
+        boxPws.classList.remove('hidden');
+        boxPwc.classList.add('hidden');
+        pwsSelect.setAttribute('required', 'required');
+        pwc1Select.removeAttribute('required');
+      }
+    }
+
+    // Form Submission
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      const form = document.getElementById('quotaForm');
+      const formData = new FormData(form);
+      const btn = document.getElementById('btnSubmitForm');
+
+      btn.disabled = true;
+      btn.innerHTML = '⏳ กำลังบันทึกข้อมูลและสร้าง PDF...';
+
+      try {
+        const res = await fetch('/api/apply', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await res.json();
+
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'บันทึกใบสมัครโควตาสำเร็จ!',
+            html: `
+              <div class="text-left text-sm space-y-2 mt-2">
+                <p><strong>ผู้สมัคร:</strong> ${result.data.fullName}</p>
+                <p><strong>รหัสใบสมัคร:</strong> <span class="font-mono text-brand-700 font-bold">${result.applicationId}</span></p>
+                <p><strong>สาขาวิชา:</strong> ${result.data.targetMajor}</p>
+                <div class="pt-2 text-xs text-slate-500">
+                  ระบบได้บันทึกข้อมูลลงฐานข้อมูลของวิทยาลัย และจัดทำรายงานใบสมัคร PDF รายบุคคลให้ท่านเรียบร้อยแล้ว
+                </div>
+              </div>
+            `,
+            showCancelButton: true,
+            confirmButtonText: '📄 ดาวน์โหลด / พิมพ์ใบสมัคร (PDF)',
+            cancelButtonText: 'ปิด',
+            confirmButtonColor: '#0284c7'
+          }).then((r) => {
+            if (r.isConfirmed) {
+              window.open(`/api/application/${result.applicationId}/pdf`, '_blank');
+            }
+            form.reset();
+            // Go to status
+            switchAppTab('status');
+            document.getElementById('statusIdCard').value = result.data.idCard;
+            searchApplication();
+          });
+        } else {
+          Swal.fire({ icon: 'error', title: 'ไม่สามารถบันทึกได้', text: result.message });
+        }
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: err.message });
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '💾 บันทึกข้อมูลและสร้างใบสมัคร PDF';
+      }
+    }
+
+    // Search Application Status & Print PDF
+    async function searchApplication(e) {
+      if (e) e.preventDefault();
+      const q = document.getElementById('statusIdCard').value.trim();
+      if (!q) return;
+
+      try {
+        const res = await fetch(`/api/status/${q}`);
+        const result = await res.json();
+
+        if (result.success) {
+          const a = result.data;
+          const card = document.getElementById('applicantResultCard');
+          card.classList.remove('hidden');
+
+          document.getElementById('app-name').textContent = a.fullName;
+          document.getElementById('app-id').textContent = a.id;
+          document.getElementById('app-quota-type').textContent = a.quotaType;
+          document.getElementById('app-major').textContent = a.targetMajor;
+          document.getElementById('app-school').textContent = a.prevSchool;
+          document.getElementById('app-gpax').textContent = a.gpax;
+
+          const badge = document.getElementById('app-badge');
+          if (a.status === 'verified') {
+            badge.className = 'px-3 py-1 rounded-full text-xs font-bold badge-verified inline-block mb-1';
+            badge.textContent = '✅ ผ่านการคัดเลือกโควตา';
+          } else if (a.status === 'enrolled') {
+            badge.className = 'px-3 py-1 rounded-full text-xs font-bold badge-enrolled inline-block mb-1';
+            badge.textContent = '🎓 มอบตัวสำเร็จแล้ว';
+          } else {
+            badge.className = 'px-3 py-1 rounded-full text-xs font-bold badge-pending inline-block mb-1';
+            badge.textContent = '⏳ รอเจ้าหน้าที่ตรวจสอบเอกสาร';
+          }
+
+          document.getElementById('app-btn-pdf').href = `/api/application/${a.id}/pdf`;
+        } else {
+          document.getElementById('applicantResultCard').classList.add('hidden');
+          Swal.fire({ icon: 'info', title: 'ไม่พบข้อมูล', text: result.message });
+        }
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: err.message });
+      }
+    }
+
+    function quickSearch(id) {
+      document.getElementById('statusIdCard').value = id;
+      searchApplication();
+    }
+
+    // ==========================================
+    // ADMIN DASHBOARD
+    // ==========================================
+
+    function checkAdminLogin() {
+      const token = sessionStorage.getItem('quotaAdminToken');
+      const loginView = document.getElementById('admin-login-view');
+      const dashView = document.getElementById('admin-dashboard-view');
+
+      if (token) {
+        loginView.classList.add('hidden');
+        dashView.classList.remove('hidden');
+        loadDashboardData();
+      } else {
+        loginView.classList.remove('hidden');
+        dashView.classList.add('hidden');
+      }
+    }
+
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('admUser').value;
+      const p = document.getElementById('admPass').value;
+
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const result = await res.json();
+        if (result.success) {
+          sessionStorage.setItem('quotaAdminToken', result.token);
+          checkAdminLogin();
+        } else {
+          Swal.fire({ icon: 'error', title: 'เข้าสู่ระบบไม่สำเร็จ', text: result.message });
+        }
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: err.message });
+      }
+    }
+
+    function handleAdminLogout() {
+      sessionStorage.removeItem('quotaAdminToken');
+      checkAdminLogin();
+    }
+
+    async function loadDashboardData() {
+      try {
+        // Fetch Stats
+        const resStats = await fetch('/api/admin/stats');
+        const statResult = await resStats.json();
+
+        if (statResult.success) {
+          const s = statResult.data;
+          document.getElementById('kpi-total').textContent = s.summary.total;
+          document.getElementById('kpi-pending').textContent = s.summary.pending;
+          document.getElementById('kpi-verified').textContent = s.summary.verified;
+          document.getElementById('kpi-enrolled').textContent = s.summary.enrolled;
+
+          // Render Chart: แยกตามแผนกวิชา
+          renderDepartmentChart(s.byDepartment);
+          // Render Chart: ประเภทโควตา
+          renderQuotaTypeChart(s.byQuotaType);
+        }
+
+        // Fetch Applicants List
+        const resApps = await fetch('/api/admin/applications');
+        const appsResult = await resApps.json();
+        if (appsResult.success) {
+          appList = appsResult.data;
+          renderAdminTable(appList);
+        }
+
+      } catch (err) {
+        console.error('Error loading dash:', err);
+      }
+    }
+
+    // Chart: แยกตามแผนกวิชา
+    function renderDepartmentChart(byDept) {
+      const ctx = document.getElementById('chartDept').getContext('2d');
+      if (chartDeptInstance) chartDeptInstance.destroy();
+
+      const labels = Object.keys(byDept);
+      const data = Object.values(byDept);
+
+      chartDeptInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'จำนวนผู้สมัคร (คน)',
+            data: data,
+            backgroundColor: [
+              '#0284c7', '#2563eb', '#4f46e5', '#7c3aed',
+              '#059669', '#10b981', '#f59e0b', '#f97316', '#64748b'
+            ],
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { precision: 0 }
+            },
+            x: {
+              ticks: {
+                maxRotation: 45,
+                minRotation: 30,
+                font: { size: 10 }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Chart: สัดส่วนประเภทโควตา
+    function renderQuotaTypeChart(byType) {
+      const ctx = document.getElementById('chartQuotaType').getContext('2d');
+      if (chartQuotaInstance) chartQuotaInstance.destroy();
+
+      const labels = Object.keys(byType);
+      const data = Object.values(byType);
+
+      chartQuotaInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: ['#0284c7', '#f59e0b', '#10b981', '#8b5cf6']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12 } }
+          }
+        }
+      });
+    }
+
+    // Render Admin Table
+    function renderAdminTable(list) {
+      const tbody = document.getElementById('adminTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-400">ไม่พบรายชื่อผู้สมัคร</td></tr>`;
+        return;
+      }
+
+      const statusMap = {
+        pending: { label: 'รอตรวจสอบ', cls: 'badge-pending' },
+        verified: { label: 'ผ่านคัดเลือก', cls: 'badge-verified' },
+        enrolled: { label: 'มอบตัวแล้ว', cls: 'badge-enrolled' },
+        rejected: { label: 'เอกสารไม่ครบ', cls: 'badge-rejected' }
+      };
+
+      tbody.innerHTML = list.map(a => {
+        const s = statusMap[a.status] || { label: a.status, cls: 'bg-slate-100 text-slate-700' };
+        return `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="p-4 font-mono font-bold text-brand-900">${a.id}</td>
+            <td class="p-4">
+              <div class="font-bold text-slate-900">${a.fullName}</div>
+              <div class="text-[11px] text-slate-400 font-mono">${a.idCard} | โทร. ${a.phone}</div>
+            </td>
+            <td class="p-4 font-medium text-slate-700">${a.quotaType}</td>
+            <td class="p-4">
+              <span class="font-bold text-brand-700">${a.targetMajor}</span>
+              ${a.majorPwc2 && a.majorPwc2 !== '-' ? `<div class="text-[10px] text-slate-400">สำรอง: ${a.majorPwc2}</div>` : ''}
+            </td>
+            <td class="p-4 text-slate-600">${a.prevSchool}</td>
+            <td class="p-4 font-mono font-bold text-slate-900">${a.gpax}</td>
+            <td class="p-4">
+              <span class="px-2.5 py-1 rounded-full font-bold text-[10px] ${s.cls}">${s.label}</span>
+            </td>
+            <td class="p-4 text-center">
+              <a href="/api/application/${a.id}/pdf" target="_blank"
+                 class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-[11px] font-bold shadow-sm transition">
+                <span>📄 พิมพ์ PDF</span>
+              </a>
+            </td>
+            <td class="p-4 text-center">
+              <button onclick="changeStatus('${a.id}', '${a.status}')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold border border-slate-300">
+                ⚙️ เปลี่ยนสถานะ
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterTable() {
+      const q = document.getElementById('admSearch').value.toLowerCase();
+      const type = document.getElementById('admFilterType').value;
+
+      let filtered = appList.filter(a => {
+        const matchQ = a.fullName.toLowerCase().includes(q) ||
+                       a.id.toLowerCase().includes(q) ||
+                       a.idCard.includes(q) ||
+                       (a.targetMajor && a.targetMajor.toLowerCase().includes(q));
+        const matchType = type === 'all' || a.quotaType.includes(type);
+        return matchQ && matchType;
+      });
+
+      renderAdminTable(filtered);
+    }
+
+    async function changeStatus(id, currentStatus) {
+      const { value: status } = await Swal.fire({
+        title: 'เปลี่ยนสถานะผู้สมัคร',
+        input: 'select',
+        inputOptions: {
+          'pending': '⏳ รอตรวจสอบเอกสาร',
+          'verified': '✅ ผ่านการคัดเลือกโควตา',
+          'enrolled': '🎓 มอบตัวเป็นนักศึกษาแล้ว',
+          'rejected': '⚠️ เอกสารไม่ครบ'
+        },
+        inputValue: currentStatus,
+        showCancelButton: true
+      });
+
+      if (status) {
+        try {
+          const res = await fetch(`/api/admin/application/${id}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status })
+          });
+          const result = await res.json();
+          if (result.success) {
+            Swal.fire({ icon: 'success', title: 'อัปเดตเรียบร้อย', timer: 1000, showConfirmButton: false });
+            loadDashboardData();
+          }
+        } catch (err) {
+          Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: err.message });
+        }
+      }
+    }
+
+    function downloadExcelExport() {
+      window.location.href = '/api/admin/export';
+    }
+
+  </script>
+</body>
+</html>

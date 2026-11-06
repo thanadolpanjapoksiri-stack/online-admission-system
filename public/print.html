@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ใบสมัครเข้ารับคัดเลือกเพื่อศึกษาต่อเป็นกรณีพิเศษ (โควตา) - วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm 15mm 12mm 15mm;
+    }
+    body {
+      font-family: 'Sarabun', 'TH Sarabun New', Tahoma, sans-serif;
+      font-size: 13.5pt;
+      line-height: 1.5;
+      color: #000;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    .print-bar {
+      background: #1e293b;
+      color: #fff;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .btn-print {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-print:hover { background: #1d4ed8; }
+    .sheet {
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 10px 0;
+      position: relative;
+    }
+    .header-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 5px;
+    }
+    .emblem-cell {
+      width: 90px;
+      vertical-align: top;
+      text-align: left;
+    }
+    .title-cell {
+      vertical-align: top;
+      text-align: center;
+      padding: 0 5px;
+    }
+    .photo-cell {
+      width: 110px;
+      vertical-align: top;
+      text-align: right;
+    }
+    .photo-box {
+      width: 105px;
+      height: 135px;
+      border: 1px solid #000;
+      display: inline-block;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 11pt;
+      padding-top: 45px;
+      box-sizing: border-box;
+      line-height: 1.3;
+      background: #fafafa;
+    }
+    .photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      margin-top: -45px;
+    }
+    .main-title {
+      font-size: 15.5pt;
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
+    .college-title {
+      font-size: 14.5pt;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+    .checkbox-group {
+      text-align: left;
+      margin-left: 200px;
+      margin-bottom: 10px;
+      font-size: 13pt;
+      line-height: 1.7;
+    }
+    .check-box {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 1px solid #000;
+      margin-right: 8px;
+      vertical-align: middle;
+      text-align: center;
+      line-height: 13px;
+      font-weight: bold;
+      font-size: 11pt;
+    }
+    .dotted-line {
+      border-bottom: 1px dotted #333;
+      display: inline-block;
+      padding: 0 4px;
+      font-weight: 600;
+    }
+    .form-row {
+      margin-bottom: 4px;
+      text-align: justify;
+      text-justify: inter-word;
+    }
+    .num-title {
+      font-weight: bold;
+      margin-right: 4px;
+    }
+    .evidence-section {
+      margin-top: 15px;
+      font-size: 13pt;
+    }
+    .evidence-item {
+      margin-left: 175px;
+      margin-bottom: 3px;
+    }
+    .sign-section {
+      margin-top: 25px;
+      float: right;
+      width: 320px;
+      text-align: center;
+      font-size: 13pt;
+      line-height: 1.6;
+    }
+    @media print {
+      .print-bar { display: none !important; }
+      body { margin: 0; background: #fff; }
+      .sheet { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="print-bar">
+    <div style="font-size: 14px;">
+      📄 <strong>ใบสมัครรายงานตัวเป็นกรณีพิเศษ (โควตา)</strong> - วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์ [<span id="top-app-id">-</span>]
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-print" onclick="window.print()">🖨️ สั่งพิมพ์ / บันทึกเป็น PDF</button>
+    </div>
+  </div>
+
+  <div class="sheet">
+    <table class="header-table">
+      <tr>
+        <td class="emblem-cell">
+          <svg width="85" height="85" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="46" stroke="#000" stroke-width="2.5" fill="#f8fafc"/>
+            <circle cx="50" cy="50" r="41" stroke="#000" stroke-width="1.2" stroke-dasharray="2 2"/>
+            <circle cx="50" cy="32" r="32" stroke="#000" stroke-width="1.5"/>
+            <path d="M50 20 L58 35 L50 32 L42 35 Z" fill="#000"/>
+            <path d="M35 45 C35 38 65 38 65 45 C65 58 50 62 50 72" stroke="#000" stroke-width="2" fill="none"/>
+            <circle cx="50" cy="74" r="3" fill="#000"/>
+            <path d="M30 75 Q50 82 70 75" stroke="#000" stroke-width="2" fill="none"/>
+            <text x="50" y="93" font-size="6.5" font-weight="bold" text-anchor="middle" fill="#000" font-family="Sarabun">สอศ. อาชีวศึกษา</text>
+          </svg>
+        </td>
+        <td class="title-cell">
+          <div class="main-title">ใบสมัครเข้ารับคัดเลือกเพื่อศึกษาต่อเป็นกรณีพิเศษ <u>(โควตา)</u></div>
+          <div class="college-title">วิทยาลัยเทคนิคท่าหลวงซิเมนต์ไทยอนุสรณ์ ประจำปีการศึกษา ๒๕๖๘</div>
+          
+          <div class="checkbox-group">
+            <div><span class="check-box" id="chk-pws-direct"></span> ระดับ ปวส. ( สายตรง )</div>
+            <div><span class="check-box" id="chk-pws-other"></span> ระดับ ปวส. ( ม.๖/ปวช. ต่างสาขา )</div>
+            <div><span class="check-box" id="chk-pwc"></span> ระดับ ปวช.</div>
+          </div>
+        </td>
+        <td class="photo-cell">
+          <div class="photo-box" id="photo-box">
+            รูปถ่าย<br>ขนาด ๑ นิ้ว
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <!-- ข้อ ๑ -->
+    <div class="form-row" style="margin-top: 10px;">
+      <span class="num-title">๑. ชื่อ-นามสกุล</span>
+      <span class="dotted-line" style="min-width: 280px;" id="p-fullname">....................................................................</span>
+      เกิดวันที่ <span class="dotted-line" style="min-width: 45px; text-align: center;" id="p-birthday">..........</span>
+      เดือน <span class="dotted-line" style="min-width: 95px; text-align: center;" id="p-birthmonth">........................</span>
+      พ.ศ. <span class="dotted-line" style="min-width: 65px; text-align: center;" id="p-birthyear">................</span>
+    </div>
+
+    <!-- ข้อ ๒ -->
+    <div class="form-row">
+      <span class="num-title">๒. ชื่อ-สกุลบิดา</span>
+      <span class="dotted-line" style="min-width: 320px;" id="p-fathername">................................................................................</span>
+      อายุ <span class="dotted-line" style="min-width: 45px; text-align: center;" id="p-fatherage">..........</span> ปี
+      อาชีพ <span class="dotted-line" style="min-width: 175px;" id="p-fatherjob">................................................</span>
+    </div>
+
+    <!-- ข้อ ๓ -->
+    <div class="form-row">
+      <span class="num-title">๓. ชื่อ-สกุลมารดา</span>
+      <span class="dotted-line" style="min-width: 305px;" id="p-mothername">................................................................................</span>
+      อายุ <span class="dotted-line" style="min-width: 45px; text-align: center;" id="p-motherage">..........</span> ปี
+      อาชีพ <span class="dotted-line" style="min-width: 175px;" id="p-motherjob">................................................</span>
+    </div>
+
+    <!-- ข้อ ๔ -->
+    <div class="form-row">
+      <span class="num-title">๔. ที่อยู่ปัจจุบันที่สามารถติดต่อได้</span>
+      บ้านเลขที่ <span class="dotted-line" style="min-width: 65px; text-align: center;" id="p-houseno">................</span>
+      หมู่ <span class="dotted-line" style="min-width: 45px; text-align: center;" id="p-villageno">..........</span>
+      ซอย <span class="dotted-line" style="min-width: 100px;" id="p-soi">..............................</span>
+      ถนน <span class="dotted-line" style="min-width: 110px;" id="p-road">..............................</span>
+    </div>
+    <div class="form-row" style="margin-left: 20px;">
+      ตำบล <span class="dotted-line" style="min-width: 120px;" id="p-subdistrict">....................................</span>
+      อำเภอ <span class="dotted-line" style="min-width: 125px;" id="p-district">....................................</span>
+      จังหวัด <span class="dotted-line" style="min-width: 135px;" id="p-province">........................................</span>
+    </div>
+    <div class="form-row" style="margin-left: 20px;">
+      รหัสไปรษณีย์ <span class="dotted-line" style="min-width: 100px; text-align: center;" id="p-postcode">............................</span>
+      หมายเลขโทรศัพท์ <span class="dotted-line" style="min-width: 250px;" id="p-phone">................................................................</span>
+    </div>
+
+    <!-- ข้อ ๕ -->
+    <div class="form-row">
+      <span class="num-title">๕. กำลังศึกษาอยู่ในระดับชั้น</span>
+      <span class="dotted-line" style="min-width: 120px; text-align: center;" id="p-grade">................................</span>
+      โรงเรียน <span class="dotted-line" style="min-width: 275px;" id="p-prevschool">....................................................................</span>
+    </div>
+    <div class="form-row" style="margin-left: 20px;">
+      ตั้งอยู่เลขที่ <span class="dotted-line" style="min-width: 65px; text-align: center;" id="p-sch-no">................</span>
+      ตำบล <span class="dotted-line" style="min-width: 110px;" id="p-sch-subdistrict">................................</span>
+      อำเภอ <span class="dotted-line" style="min-width: 115px;" id="p-sch-district">................................</span>
+      จังหวัด <span class="dotted-line" style="min-width: 130px;" id="p-sch-province">................................</span>
+    </div>
+    <div class="form-row" style="margin-left: 20px;">
+      ผลการเรียนเฉลี่ยสะสม <span class="dotted-line" style="min-width: 110px; text-align: center; font-weight: bold;" id="p-gpax">................................</span>
+      สาขาวิชา <span class="dotted-line" style="min-width: 245px;" id="p-prevmajor">................................................................</span>
+    </div>
+
+    <!-- ข้อ ๖ -->
+    <div class="form-row">
+      <span class="num-title">๖. ต้องการสมัครเข้าเรียน</span>
+      ระดับ ปวส. สาขาวิชา <span class="dotted-line" style="min-width: 380px; font-weight: bold;" id="p-major-pws">................................................................................................</span>
+    </div>
+    <div class="form-row" style="margin-left: 175px;">
+      ระดับ ปวช. สาขาวิชาลำดับที่ ๑. <span class="dotted-line" style="min-width: 280px; font-weight: bold;" id="p-major-pwc1">................................................................................</span>
+    </div>
+    <div class="form-row" style="margin-left: 245px;">
+      สาขาวิชาลำดับที่ ๒. <span class="dotted-line" style="min-width: 280px;" id="p-major-pwc2">................................................................................</span>
+    </div>
+
+    <!-- หลักฐาน -->
+    <div class="evidence-section">
+      <div style="float: left; font-weight: normal;">หลักฐานประกอบการสมัคร</div>
+      <div class="evidence-item">๑. เอกสารแสดงผลการเรียนเฉลี่ยสะสม ๕ ภาคเรียน จำนวน ๑ ฉบับ</div>
+      <div class="evidence-item">๒. สำเนาบัตรประชาชน / สำเนาทะเบียนบ้าน จำนวน ๑ ฉบับ</div>
+      <div class="evidence-item">๓. สำเนาเกียรติบัตร/ใบรับรองความสามารถพิเศษ/ใบประกาศ (ถ้ามี)</div>
+    </div>
+
+    <!-- ช่องลงชื่อ -->
+    <div class="sign-section">
+      <div>ลงชื่อ............................................................ผู้สมัคร</div>
+      <div style="margin-top: 3px;">( <span style="display: inline-block; min-width: 210px;" id="p-sign-name">............................................................</span> )</div>
+      <div style="margin-top: 3px;">
+        วันที่ <span class="dotted-line" style="min-width: 35px; text-align: center;" id="p-sign-day">...</span>
+        เดือน <span class="dotted-line" style="min-width: 80px; text-align: center;" id="p-sign-month">.........</span>
+        พ.ศ. <span class="dotted-line" style="min-width: 55px; text-align: center;" id="p-sign-year">.....</span>
+      </div>
+    </div>
+
+    <div style="clear: both;"></div>
+
+    <div style="margin-top: 30px; border-top: 1px dashed #666; padding-top: 10px; font-size: 11pt; color: #444;">
+      <table style="width: 100%;">
+        <tr>
+          <td><strong>รหัสใบสมัคร:</strong> <span id="btm-app-id">-</span> | <strong>เลขบัตรประชาชน:</strong> <span id="btm-idcard">-</span> | <strong>เบอร์โทร:</strong> <span id="btm-phone">-</span></td>
+          <td style="text-align: right;"><strong>พิมพ์เมื่อ:</strong> <span id="btm-date">-</span></td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    function toThai(n) {
+      if (!n) return '';
+      const t = ['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙'];
+      return String(n).replace(/[0-9]/g, d => t[d]);
+    }
+    const THAI_MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    async function loadData() {
+      let app = null;
+      // Try local storage first
+      try {
+        const localList = JSON.parse(localStorage.getItem('thaluang_quota_apps') || '[]');
+        app = localList.find(x => x.id === id || x.idCard === id);
+      } catch(e){}
+
+      // If not in localStorage, fetch from API
+      if (!app) {
+        try {
+          const res = await fetch('/api/status/' + id);
+          const r = await res.json();
+          if (r.success) app = r.data;
+        } catch(e){}
+      }
+
+      if (!app) {
+        alert('ไม่พบข้อมูลใบสมัคร');
+        return;
+      }
+
+      document.getElementById('top-app-id').textContent = app.id;
+      document.getElementById('btm-app-id').textContent = app.id;
+      document.getElementById('btm-idcard').textContent = app.idCard;
+      document.getElementById('btm-phone').textContent = app.phone;
+      document.getElementById('btm-date').textContent = new Date().toLocaleDateString('th-TH');
+
+      if (app.quotaType && app.quotaType.includes('สายตรง')) document.getElementById('chk-pws-direct').textContent = '✓';
+      if (app.quotaType && app.quotaType.includes('ต่างสาขา')) document.getElementById('chk-pws-other').textContent = '✓';
+      if (app.quotaType && (app.quotaType === 'ปวช.' || app.quotaType === 'ระดับ ปวช.')) document.getElementById('chk-pwc').textContent = '✓';
+
+      document.getElementById('p-fullname').textContent = app.fullName || '';
+      document.getElementById('p-sign-name').textContent = app.fullName || '';
+      document.getElementById('p-birthday').textContent = toThai(app.birthDay);
+      document.getElementById('p-birthmonth').textContent = app.birthMonth || '';
+      document.getElementById('p-birthyear').textContent = toThai(app.birthYear);
+
+      document.getElementById('p-fathername').textContent = app.fatherName || '';
+      document.getElementById('p-fatherage').textContent = toThai(app.fatherAge);
+      document.getElementById('p-fatherjob').textContent = app.fatherJob || '';
+
+      document.getElementById('p-mothername').textContent = app.motherName || '';
+      document.getElementById('p-motherage').textContent = toThai(app.motherAge);
+      document.getElementById('p-motherjob').textContent = app.motherJob || '';
+
+      document.getElementById('p-houseno').textContent = toThai(app.houseNo);
+      document.getElementById('p-villageno').textContent = toThai(app.villageNo);
+      document.getElementById('p-soi').textContent = app.soi || '';
+      document.getElementById('p-road').textContent = app.road || '';
+      document.getElementById('p-subdistrict').textContent = app.subdistrict || '';
+      document.getElementById('p-district').textContent = app.district || '';
+      document.getElementById('p-province').textContent = app.province || '';
+      document.getElementById('p-postcode').textContent = toThai(app.postcode);
+      document.getElementById('p-phone').textContent = toThai(app.phone);
+
+      document.getElementById('p-grade').textContent = app.currentGrade || '';
+      document.getElementById('p-prevschool').textContent = app.prevSchool || '';
+      document.getElementById('p-sch-no').textContent = toThai(app.prevSchoolHouseNo);
+      document.getElementById('p-sch-subdistrict').textContent = app.prevSchoolSubdistrict || '';
+      document.getElementById('p-sch-district').textContent = app.prevSchoolDistrict || '';
+      document.getElementById('p-sch-province').textContent = app.prevSchoolProvince || '';
+      document.getElementById('p-gpax').textContent = toThai(app.gpax);
+      document.getElementById('p-prevmajor').textContent = app.prevMajor || '';
+
+      document.getElementById('p-major-pws').textContent = (app.majorPws && app.majorPws !== '-') ? app.majorPws : '';
+      document.getElementById('p-major-pwc1').textContent = (app.majorPwc1 && app.majorPwc1 !== '-') ? app.majorPwc1 : '';
+      document.getElementById('p-major-pwc2').textContent = (app.majorPwc2 && app.majorPwc2 !== '-') ? app.majorPwc2 : '';
+
+      const now = new Date();
+      document.getElementById('p-sign-day').textContent = toThai(now.getDate());
+      document.getElementById('p-sign-month').textContent = THAI_MONTHS[now.getMonth()];
+      document.getElementById('p-sign-year').textContent = toThai(now.getFullYear() + 543);
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
